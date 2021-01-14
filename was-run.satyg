@@ -1,0 +1,24 @@
+module WasRun : sig
+
+  type t
+
+  val make : string -> t
+  val wasRun : t -> bool
+  val testMethod: t -> unit
+
+end = struct
+
+  type s = bool ref
+  type t = s
+
+  let make name =
+    let-mutable r <- false in
+    r
+
+  let wasRun test =
+    !test
+
+  let testMethod test =
+    test <- true
+
+end

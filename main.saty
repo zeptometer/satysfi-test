@@ -1,4 +1,7 @@
-let display-bool b = if b then `true` else `false` in
+@import: was-run
+
+let display-bool b = (if b then `true` else `false`)
+  |> display-message in
 let test = WasRun.make `test-method` in
 let () = test |> WasRun.wasRun |> display-bool in
 let () = test |> WasRun.testMethod in
