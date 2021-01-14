@@ -2,8 +2,11 @@
 
 let display-bool b = (if b then `true` else `false`)
   |> display-message in
-let test = WasRun.make `test-method` in
-let () = test |> WasRun.wasRun |> display-bool in
-let () = test |> WasRun.run in
-let () = test |> WasRun.wasRun |> display-bool in
+let-mutable r <- false in
+let testFun () = r <- true in
+let wasRun = WasRun.make (| wasRun = r; testFun = testFun |) in
+let test = TestCase.make wasRun in
+let () = wasRun |> WasRun.wasRun |> display-bool in
+let () = test |> TestCase.run in
+let () = wasRun |> WasRun.wasRun |> display-bool in
 `Following "The xUnit example" of "Test-Driven Development"`

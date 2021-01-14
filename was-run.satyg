@@ -1,30 +1,38 @@
-module WasRun : sig
+module WasRun: sig
 
   type t
 
-  val make : string -> t
+  val make : (| wasRun: bool ref; testFun: unit -> unit |) -> t
+
+  val run : t -> unit
   val wasRun : t -> bool
+
+end = struct
+
+  type s = (| wasRun: bool ref; testFun: unit -> unit |)
+  type t = s
+
+  let make x = x
+
+  let run x = x#testFun ()
+  let wasRun x = !x#wasRun
+
+end
+
+module TestCase : sig
+
+  type t
+
+  val make : WasRun.t -> t
   val run: t -> unit
 
 end = struct
 
-  type s = (|
-    wasRun: bool ref;
-    testedFun: unit -> unit;
-  |)
+  type s = WasRun.t
   type t = s
 
-  let make name =
-    let-mutable r <- false in
-    (|
-      wasRun = r;
-      testedFun = fun () -> (r <- true);
-    |)
+  let make wasRun = wasRun
 
-  let wasRun test =
-    !test#wasRun
-
-  let run test =
-    test#testedFun ()
+  let run test = test |> WasRun.run
 
 end
