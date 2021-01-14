@@ -1,38 +1,36 @@
-module WasRun: sig
-
-  type t
-
-  val make : (| wasRun: bool ref; testFun: unit -> unit |) -> t
-
-  val run : t -> unit
-  val wasRun : t -> bool
-
-end = struct
-
-  type s = (| wasRun: bool ref; testFun: unit -> unit |)
-  type t = s
-
-  let make x = x
-
-  let run x = x#testFun ()
-  let wasRun x = !x#wasRun
-
-end
-
 module TestCase : sig
 
   type t
 
-  val make : WasRun.t -> t
+  val make : (unit -> unit) -> t
   val run: t -> unit
 
 end = struct
 
-  type s = WasRun.t
+  type s = unit -> unit
   type t = s
 
-  let make wasRun = wasRun
+  let make testFun = testFun
 
-  let run test = test |> WasRun.run
+  let run test = test ()
+
+end
+
+module WasRun: sig
+
+  type t
+
+  val make : (| wasRun: bool ref; testFun: unit -> unit |) -> t * TestCase.t
+
+  val was-run : t -> bool
+
+end = struct
+
+  type s = bool ref
+  type t = s
+
+  let make x = (x#wasRun, TestCase.make x#testFun)
+
+  let was-run x = !x
 
 end

@@ -3,11 +3,13 @@
 let assert b = if b then () else abort-with-message `Assertion failed` in
 let display-bool b = (if b then `true` else `false`)
   |> display-message in
-let-mutable r <- false in
-let testFun () = r <- true in
-let wasRun = WasRun.make (| wasRun = r; testFun = testFun |) in
-let test = TestCase.make wasRun in
-let () = assert (not (wasRun |> WasRun.wasRun)) in
-let () = test |> TestCase.run in
-let () = assert (wasRun |> WasRun.wasRun) in
+let test-case-test = TestCase.make (fun () -> (
+  let-mutable r <- false in
+  let testFun () = r <- true in
+  let (wasRun, test) = WasRun.make (| wasRun = r; testFun = testFun |) in
+  let () = assert (not (wasRun |> WasRun.was-run)) in
+  let () = test |> TestCase.run in
+  assert (wasRun |> WasRun.was-run)
+)) in
+let () = test-case-test |> TestCase.run in
 `Following "The xUnit example" of "Test-Driven Development"`
