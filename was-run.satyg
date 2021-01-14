@@ -20,7 +20,7 @@ module WasRun: sig
 
   type t
 
-  val make : (| wasRun: bool ref; testFun: unit -> unit |) -> t * TestCase.t
+  val make : unit -> t * TestCase.t
 
   val was-run : t -> bool
 
@@ -29,7 +29,10 @@ end = struct
   type s = bool ref
   type t = s
 
-  let make x = (x#wasRun, TestCase.make x#testFun)
+  let make x =
+    let-mutable r <- false in
+    let test-fun = fun () -> (r <- true) in
+  (r, TestCase.make test-fun)
 
   let was-run x = !x
 
