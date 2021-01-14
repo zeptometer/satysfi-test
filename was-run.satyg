@@ -5,24 +5,26 @@ module WasRun : sig
   val make : string -> t
   val wasRun : t -> bool
   val run: t -> unit
-  val testMethod: t -> unit
 
 end = struct
 
-  type s = bool ref
+  type s = (|
+    wasRun: bool ref;
+    testedFun: unit -> unit;
+  |)
   type t = s
 
   let make name =
     let-mutable r <- false in
-    r
+    (|
+      wasRun = r;
+      testedFun = fun () -> (r <- true);
+    |)
 
   let wasRun test =
-    !test
-
-  let testMethod test =
-    test <- true
+    !test#wasRun
 
   let run test =
-    test |> testMethod
+    test#testedFun ()
 
 end
