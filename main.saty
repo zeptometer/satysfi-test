@@ -1,0 +1,6 @@
+let display-bool b = if b then `true` else `false` in
+let test = WasRun.make `test-method` in
+let () = test |> WasRun.wasRun |> display-bool in
+let () = test |> WasRun.testMethod in
+let () = test |> WasRun.wasRun |> display-bool in
+`Following "The xUnit example" of "Test-Driven Development"`
