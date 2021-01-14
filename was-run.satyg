@@ -23,6 +23,7 @@ module WasRun: sig
   val make : unit -> t * TestCase.t
 
   val was-run : t -> bool
+  val was-set-up : t -> bool
 
 end = struct
 
@@ -35,5 +36,6 @@ end = struct
   (r, TestCase.make test-fun)
 
   let was-run x = !x
+  let was-set-up x = false
 
 end
