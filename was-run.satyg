@@ -4,6 +4,7 @@ module WasRun : sig
 
   val make : string -> t
   val wasRun : t -> bool
+  val run: t -> unit
   val testMethod: t -> unit
 
 end = struct
@@ -20,5 +21,8 @@ end = struct
 
   let testMethod test =
     test <- true
+
+  let run test =
+    test |> testMethod
 
 end
