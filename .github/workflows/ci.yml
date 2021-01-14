@@ -1,0 +1,24 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  unit-test:
+    name: unit tests
+    runs-on: ubuntu-latest
+    container:
+      image: amutake/satysfi:latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run regression tests
+        run: |
+          export HOME=/root
+          eval $(opam env)
+          satysfi --text-mode "text" main.saty -o main.txt
+      - name: Install Apt dependencies
+        run: apt-get update && apt-get install -y xz-utils liblzma-dev
+      - name: Upload artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: yabai2020w
+          path: main.txt
