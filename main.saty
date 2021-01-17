@@ -1,2 +1,7 @@
 let assert b = if b then () else abort-with-message `Assertion failed` in
+let-mutable was-run <- false in
+let () = assert (not (!was-run)) in
+let run () = was-run <- true in
+let () = run () in
+let () = assert (!was-run) in
 `Following "The xUnit example" of "Test-Driven Development"`
