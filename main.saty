@@ -8,17 +8,16 @@
 % count test runs
 % count failure results
 
-let assert b = if b then () else abort-with-message `Assertion failed` in
+let assert b = if b then TestResult.pass else  TestResult.fail in
 
 open TestCase in
 let _ = describe `satysfi-test` [
   test `test calls test body` (fun () -> (
     let spy = Spy.make () in
-    let () = not (spy |> Spy.was-run) |> assert in
+    let was-run-prev = spy |> Spy.was-run in
     let _ = test `Mock test case` (spy |> Spy.get-spy)
       |> run in
-    let () = spy |> Spy.was-run |> assert in
-    TestResult.pass
+    (not was-run-prev && (spy |> Spy.was-run)) |> assert
   ));
 
   test `describe calls all test cases` (fun () -> (
@@ -29,17 +28,32 @@ let _ = describe `satysfi-test` [
         test `Test case 2` (spy2 |> Spy.get-spy);
       ]
     ] |> run in
-    let () = ((spy1 |> Spy.was-run) && (spy2 |> Spy.was-run)) |> assert in
-    TestResult.pass
+    ((spy1 |> Spy.was-run) && (spy2 |> Spy.was-run)) |> assert
   ));
 
   test `Test result of single test case` (fun () -> (
     let result = test `Mock test case` (fun () -> (
       TestResult.pass
     )) |> run in
-    let () = assert (result |> TestResult.is-pass) in
-    TestResult.pass
-  ))
+    assert (result |> TestResult.is-pass)
+  ));
+
+  % test `Aborts when test fails` (fun () -> (
+  %   TestResult.fail
+  % ))
+
+  % describe `Expect` [
+  %   test `always-pass` (fun () -> (
+  %     Expect.always-pass |>
+  %     TestResult.pass
+  %   ));
+  %   test `true passes when true is passed` (fun () -> (
+  %     true |> Expect.true
+  %   ));
+  %   % test `true fails when false is passed` (fun () -> (
+  %   %   false |> Expect.true
+  %   % ))
+  % ]
 ] |> run in
 
 `Following "The xUnit example" of "Test-Driven Development"`

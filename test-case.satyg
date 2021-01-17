@@ -17,7 +17,13 @@ end = struct
 
   let test name fn = (| name = name; test-body = fn |)
 
-  let run test-case = test-case#test-body ()
+  let run test-case =
+    let result = test-case#test-body () in
+    if result |> TestResult.is-pass then
+      result
+    else
+      abort-with-message `Test failed!`
+
 
   let describe name test-cases = test name (fun () -> (
     let _ = test-cases |> List.map run in

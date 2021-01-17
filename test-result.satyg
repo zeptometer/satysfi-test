@@ -3,6 +3,7 @@ module TestResult : sig
   type t
 
   val pass : t
+  val fail : t
 
   val is-pass : t -> bool
 
@@ -11,6 +12,7 @@ end = struct
   type t = bool
 
   let pass = true
+  let fail = false
 
   let is-pass result = result
 
