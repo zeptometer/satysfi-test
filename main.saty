@@ -20,14 +20,13 @@ let () = test `test calls test body` (fun () -> (
   spy |> Spy.was-run |> assert
 )) |> run in
 
-let () = describe `Empty test cases does not explode` [
-
-] |> run in
-
-% let (spy1, spy2) = (Spy.make (), Spy.make ()) in
-% let () = describe `Multiple test cases` [
-%   test `Test case 1` (fun () -> ());
-%   test `Test case 2` (fun () -> ());
-% ] |> run in
+let () = test `describe calls all test cases` (fun () -> (
+  let (spy1, spy2) = (Spy.make (), Spy.make ()) in
+  let () = describe `Multiple test cases` [
+    test `Test case 1` (spy1 |> Spy.get-spy);
+    test `Test case 2` (spy2 |> Spy.get-spy);
+  ] |> run in
+  ((spy1 |> Spy.was-run) && (spy2 |> Spy.was-run)) |> assert
+)) |> run in
 
 `Following "The xUnit example" of "Test-Driven Development"`
