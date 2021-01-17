@@ -2,6 +2,8 @@
 
 % Todo
 % x call test method
+% multiple tests
+% aggregate test results
 
 let assert b = if b then () else abort-with-message `Assertion failed` in
 
