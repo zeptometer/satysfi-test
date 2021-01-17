@@ -1,0 +1,16 @@
+module TestCase : sig
+
+  type t
+
+  val test : (unit -> unit) -> t
+  val run : t -> unit
+
+end = struct
+
+  type s = (| test-body : unit -> unit |)
+  type t = s
+
+  let test fn = (| test-body = fn |)
+  let run test-case = test-case#test-body ()
+
+end
