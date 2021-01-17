@@ -11,6 +11,18 @@
 
 open TestCase in
 let _ = describe `satysfi-test` [
+  describe `Spy` [
+    test `was-run is false initially` (fun () -> (
+      let spy = Spy.make () in
+      spy |> Spy.was-run |> Expect.is-false
+    ));
+    test `was-run is true when test-fun is called` (fun () -> (
+      let spy = Spy.make () in
+      let _ = (spy |> Spy.get-spy) () in
+      spy |> Spy.was-run |> Expect.is-true
+    ))
+  ];
+
   test `test calls test body` (fun () -> (
     let spy = Spy.make () in
     let was-run-prev = spy |> Spy.was-run in
