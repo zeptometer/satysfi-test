@@ -25,21 +25,21 @@ let _ = describe `satysfi-test` [
     let (spy1, spy2) = (Spy.make (), Spy.make ()) in
     let _ = describe `Multiple test cases` [
       test `Test case 1` (spy1 |> Spy.get-spy);
-      test `Test case 2` (spy2 |> Spy.get-spy);
+      describe `Nested describe` [
+        test `Test case 2` (spy2 |> Spy.get-spy);
+      ]
     ] |> run in
     let () = ((spy1 |> Spy.was-run) && (spy2 |> Spy.was-run)) |> assert in
     TestResult.pass
   ));
 
-  describe `test result aggregation` [
-    test `single test case` (fun () -> (
-      let result = test `Mock test case` (fun () -> (
-        TestResult.pass
-      )) |> run in
-      let () = assert (result |> TestResult.is-pass) in
+  test `Test result of single test case` (fun () -> (
+    let result = test `Mock test case` (fun () -> (
       TestResult.pass
-    ))
-  ]
+    )) |> run in
+    let () = assert (result |> TestResult.is-pass) in
+    TestResult.pass
+  ))
 ] |> run in
 
 `Following "The xUnit example" of "Test-Driven Development"`
