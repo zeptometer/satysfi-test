@@ -1,0 +1,22 @@
+module Spy : sig
+
+  type t
+
+  val make : unit -> t
+  val get-spy : t -> (unit -> unit)
+  val was-run : t -> bool
+
+end = struct
+
+  type s = (| was-run : bool ref; spy-fun : unit -> unit |)
+  type t = s
+
+  let make () =
+    let-mutable was-run <- false in
+    let spy-fun = (fun () -> (was-run <- true)) in
+    (| was-run = was-run; spy-fun = spy-fun |)
+
+  let get-spy spy = spy#spy-fun
+  let was-run spy = !spy#was-run
+
+end

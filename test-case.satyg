@@ -1,16 +1,23 @@
+@require: list
+
 module TestCase : sig
 
   type t
 
-  val test : (unit -> unit) -> t
+  val describe : string -> t list -> t
+  val test : string -> (unit -> unit) -> t
   val run : t -> unit
 
 end = struct
 
-  type s = (| test-body : unit -> unit |)
+  type s = (| name : string; test-body : unit -> unit |)
   type t = s
 
-  let test fn = (| test-body = fn |)
+  let test name fn = (| name = name; test-body = fn |)
+
   let run test-case = test-case#test-body ()
+
+  let describe name test-cases = test name (fun () ->
+    test-cases |> List.iter run)
 
 end

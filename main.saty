@@ -1,3 +1,4 @@
+@import: spy
 @import: test-case
 
 % Todo
@@ -10,13 +11,21 @@ let assert b = if b then () else abort-with-message `Assertion failed` in
 let test fn = (| run = fn |) in
 let run test-case = test-case#run () in
 
-let-mutable was-run <- false in
+open TestCase in
+let spy = Spy.make () in
+let () = not (spy |> Spy.was-run) |> assert in
+let () = test `Call test body` (spy |> Spy.get-spy)
+  |> run in
+let () = spy |> Spy.was-run |> assert in
 
-let () = assert (not (!was-run)) in
+let () = describe `Empty test cases does not explode` [
 
-let () = TestCase.test (fun () -> (was-run <- true))
-  |> TestCase.run in
+] |> run in
 
-let () = assert (!was-run) in
+% let (spy1, spy2) = (Spy.make (), Spy.make ()) in
+% let () = describe `Multiple test cases` [
+%   test `Test case 1` (fun () -> ());
+%   test `Test case 2` (fun () -> ());
+% ] |> run in
 
 `Following "The xUnit example" of "Test-Driven Development"`
