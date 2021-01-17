@@ -12,11 +12,13 @@ let test fn = (| run = fn |) in
 let run test-case = test-case#run () in
 
 open TestCase in
-let spy = Spy.make () in
-let () = not (spy |> Spy.was-run) |> assert in
-let () = test `Call test body` (spy |> Spy.get-spy)
-  |> run in
-let () = spy |> Spy.was-run |> assert in
+let () = test `test calls test body` (fun () -> (
+  let spy = Spy.make () in
+  let () = not (spy |> Spy.was-run) |> assert in
+  let () = test `Mock test case` (spy |> Spy.get-spy)
+    |> run in
+  spy |> Spy.was-run |> assert
+)) |> run in
 
 let () = describe `Empty test cases does not explode` [
 
