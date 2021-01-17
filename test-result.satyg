@@ -1,0 +1,17 @@
+module TestResult : sig
+
+  type t
+
+  val pass : t
+
+  val is-pass : t -> bool
+
+end = struct
+
+  type t = bool
+
+  let pass = true
+
+  let is-pass result = result
+
+end

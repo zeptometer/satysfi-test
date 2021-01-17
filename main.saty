@@ -1,5 +1,6 @@
 @import: spy
 @import: test-case
+@import: test-result
 
 % Todo
 % x call test method
@@ -10,23 +11,35 @@
 let assert b = if b then () else abort-with-message `Assertion failed` in
 
 open TestCase in
-let () = describe `satysfi-test` [
+let _ = describe `satysfi-test` [
   test `test calls test body` (fun () -> (
     let spy = Spy.make () in
     let () = not (spy |> Spy.was-run) |> assert in
-    let () = test `Mock test case` (spy |> Spy.get-spy)
+    let _ = test `Mock test case` (spy |> Spy.get-spy)
       |> run in
-    spy |> Spy.was-run |> assert
+    let () = spy |> Spy.was-run |> assert in
+    TestResult.pass
   ));
 
   test `describe calls all test cases` (fun () -> (
     let (spy1, spy2) = (Spy.make (), Spy.make ()) in
-    let () = describe `Multiple test cases` [
+    let _ = describe `Multiple test cases` [
       test `Test case 1` (spy1 |> Spy.get-spy);
       test `Test case 2` (spy2 |> Spy.get-spy);
     ] |> run in
-    ((spy1 |> Spy.was-run) && (spy2 |> Spy.was-run)) |> assert
+    let () = ((spy1 |> Spy.was-run) && (spy2 |> Spy.was-run)) |> assert in
+    TestResult.pass
   ));
+
+  describe `test result aggregation` [
+    test `single test case` (fun () -> (
+      let result = test `Mock test case` (fun () -> (
+        TestResult.pass
+      )) |> run in
+      let () = assert (result |> TestResult.is-pass) in
+      TestResult.pass
+    ))
+  ]
 ] |> run in
 
 `Following "The xUnit example" of "Test-Driven Development"`
