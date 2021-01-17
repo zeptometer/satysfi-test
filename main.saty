@@ -48,12 +48,20 @@ let _ = describe `satysfi-test` [
   ];
 
   describe `TestSuiteResult` [
-    test `1 run with single successful TestCase` (fun () -> (
+    test `1 success with single successful TestCase` (fun () -> (
       let result = test `Mock test case` (fun () -> (
-        TestResult.pass
+        Expect.always-pass
       )) |> run in
       (result |> TestSuiteResult.count-run) == 1
       && (result |> TestSuiteResult.count-success) == 1
+      |> Expect.is-true
+    ));
+    test `1 failure with single failure TestCase` (fun () -> (
+      let result = test `Mock test case` (fun () -> (
+       Expect.always-fail
+      )) |> run in
+      (result |> TestSuiteResult.count-run) == 1
+      && (result |> TestSuiteResult.count-success) == 0
       |> Expect.is-true
     ));
   ];
