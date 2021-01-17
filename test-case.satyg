@@ -1,6 +1,7 @@
 @require: list
 
 @import: test-result
+@import: test-suite-result
 
 module TestCase : sig
 
@@ -8,7 +9,7 @@ module TestCase : sig
 
   val describe : string -> t list -> t
   val test : string -> (unit -> TestResult.t) -> t
-  val run : t -> TestResult.t
+  val run : t -> TestSuiteResult.t
 
 end = struct
 
@@ -20,10 +21,9 @@ end = struct
   let run test-case =
     let result = test-case#test-body () in
     if result |> TestResult.is-pass then
-      result
+      TestSuiteResult.make (| run = 1; success = 1 |)
     else
-      abort-with-message `Test failed!`
-
+      TestSuiteResult.make (| run = 1; success = 0|)
 
   let describe name test-cases = test name (fun () -> (
     let _ = test-cases |> List.map run in

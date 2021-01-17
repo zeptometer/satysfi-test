@@ -2,6 +2,7 @@
 @import: spy
 @import: test-case
 @import: test-result
+@import: test-suite-result
 
 % Todo
 % x call test method
@@ -46,14 +47,16 @@ let _ = describe `satysfi-test` [
     ));
   ];
 
-  test `Test result of single test case` (fun () -> (
-    let result = test `Mock test case` (fun () -> (
-      TestResult.pass
-    )) |> run in
-    result
-    |> TestResult.is-pass
-    |> Expect.is-true
-  ));
+  describe `TestSuiteResult` [
+    test `1 run with single successful TestCase` (fun () -> (
+      let result = test `Mock test case` (fun () -> (
+        TestResult.pass
+      )) |> run in
+      (result |> TestSuiteResult.count-run) == 1
+      && (result |> TestSuiteResult.count-success) == 1
+      |> Expect.is-true
+    ));
+  ];
 
   % test `Aborts when test fails` (fun () -> (
   %   Expect.always-fail
