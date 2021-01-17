@@ -1,0 +1,19 @@
+@import: test-result
+
+module Expect : sig
+
+  val always-pass : TestResult.t
+  val always-fail : TestResult.t
+
+  val is-true : bool -> TestResult.t
+  val is-false : bool -> TestResult.t
+
+end = struct
+
+  let always-pass = TestResult.pass
+  let always-fail = TestResult.fail
+
+  let is-true b = if b then TestResult.pass else TestResult.fail
+  let is-false b = if b then TestResult.fail else TestResult.pass
+
+end

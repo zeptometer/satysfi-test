@@ -1,3 +1,4 @@
+@import: expect
 @import: spy
 @import: test-case
 @import: test-result
@@ -39,21 +40,26 @@ let _ = describe `satysfi-test` [
   ));
 
   % test `Aborts when test fails` (fun () -> (
-  %   TestResult.fail
-  % ))
+  %   Expect.always-fail
+  % ));
 
-  % describe `Expect` [
-  %   test `always-pass` (fun () -> (
-  %     Expect.always-pass |>
-  %     TestResult.pass
-  %   ));
-  %   test `true passes when true is passed` (fun () -> (
-  %     true |> Expect.true
-  %   ));
-  %   % test `true fails when false is passed` (fun () -> (
-  %   %   false |> Expect.true
-  %   % ))
-  % ]
+  describe `Expect` [
+    test `always-pass` (fun () -> (
+      Expect.always-pass |> TestResult.is-pass |> assert
+    ));
+    test `true passes when true is passed` (fun () -> (
+      Expect.is-true true |> TestResult.is-pass |> assert
+    ));
+    test `true fails when false is passed` (fun () -> (
+      Expect.is-true false |> TestResult.is-pass |> (not) |> assert
+    ));
+    test `false passes when false is passed` (fun () -> (
+      Expect.is-false false |> TestResult.is-pass |> assert
+    ));
+    test `false fails when true is passed` (fun () -> (
+      Expect.is-false false |> TestResult.is-pass |> assert
+    ));
+  ]
 ] |> run in
 
 `Following "The xUnit example" of "Test-Driven Development"`
