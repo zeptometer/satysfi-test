@@ -97,7 +97,7 @@ let result = describe `satysfi-test` [
       Expect.is-false false |> TestResult.is-pass |> assert
     ));
     test `false fails when true is passed` (fun () -> (
-      Expect.is-false false |> TestResult.is-pass |> assert
+      Expect.is-false true |> TestResult.is-pass |> (not) |> assert
     ));
   ]
 ] |> run in
