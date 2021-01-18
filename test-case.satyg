@@ -13,20 +13,38 @@ module TestCase : sig
 
 end = struct
 
-  type s = (| name : string; test-body : unit -> TestResult.t |)
+  type s = (| name : string; test-runner : unit -> TestSuiteResult.t |)
   type t = s
 
-  let test name fn = (| name = name; test-body = fn |)
+  let test name test-body =
+    let test-runner () =
+      let result = test-body () in
+      if result |> TestResult.is-pass then
+        TestSuiteResult.make (| run = 1; success = 1 |)
+      else
+        TestSuiteResult.make (| run = 1; success = 0 |) in
+    (|
+      name = name;
+      test-runner = test-runner;
+    |)
 
-  let run test-case =
-    let result = test-case#test-body () in
-    if result |> TestResult.is-pass then
-      TestSuiteResult.make (| run = 1; success = 1 |)
-    else
-      TestSuiteResult.make (| run = 1; success = 0|)
+  let run test-case = test-case#test-runner ()
 
-  let describe name test-cases = test name (fun () -> (
-    let _ = test-cases |> List.map run in
-    TestResult.pass))
-
+  let describe name test-cases =
+    let combine-result a b =
+      open TestSuiteResult in
+      make (|
+        run = (count-run a + count-run b);
+        success = (count-success a + count-success b);
+      |) in
+    let empty-result =
+      TestSuiteResult.make (| run = 0; success = 0 |) in
+    let test-runner () =
+      test-cases
+      |> List.map run
+      |> List.fold-left combine-result empty-result in
+    (|
+      name = name;
+      test-runner = test-runner;
+    |)
 end

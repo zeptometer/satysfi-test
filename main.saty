@@ -7,11 +7,11 @@
 % Todo
 % x call test method
 % x multiple tests
-% count test runs
-% count failure results
+% x count test runs
+% x count failure results
 
 open TestCase in
-let _ = describe `satysfi-test` [
+let result = describe `satysfi-test` [
   describe `Spy` [
     test `was-run is false initially` (fun () -> (
       let spy = Spy.make () in
@@ -64,9 +64,20 @@ let _ = describe `satysfi-test` [
       && (result |> TestSuiteResult.count-success) == 0
       |> Expect.is-true
     ));
+    test `describe aggregates TestSuiteResult` (fun () -> (
+      let result = describe `Mock describe` [
+        test `success 1` (fun () -> Expect.always-pass);
+        test `success 2` (fun () -> Expect.always-pass);
+        test `fail 3` (fun () -> Expect.always-fail);
+      ] |> run in
+      (result |> TestSuiteResult.count-run) == 3
+      && (result |> TestSuiteResult.count-success) == 2
+      |> Expect.is-true
+    ))
   ];
 
-  % test `Aborts when test fails` (fun () -> (
+  %% Uncomment following lines to have a failing test case
+  % test `Test can fail` (fun () -> (
   %   Expect.always-fail
   % ));
 
@@ -90,4 +101,15 @@ let _ = describe `satysfi-test` [
   ]
 ] |> run in
 
-`Following "The xUnit example" of "Test-Driven Development"`
+let stringify-result result =
+  open TestSuiteResult in
+  let run-count = result |> count-run in
+  let success-count = result |> count-success in
+  #`Test result : `#
+  ^ (arabic run-count) ^ #` run, `#
+  ^ (arabic success-count) ^ #` success, `#
+  ^ (arabic (run-count - success-count)) ^ #` fail`# in
+
+let message = result |> stringify-result in
+let () = message |> display-message in
+message

@@ -1,0 +1,20 @@
+module TestSuiteResult : sig
+
+  type t
+
+  val make : (| run : int; success : int |) -> t
+
+  val count-run : t -> int
+  val count-success : t -> int
+
+end = struct
+
+  type t = (| run : int; success : int |)
+
+  let make result = result
+
+  let count-run result = result#run
+
+  let count-success result = result#success
+
+end
