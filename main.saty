@@ -27,11 +27,8 @@ let result = describe `satysfi-test` [
   describe `TestCase` [
     test `test calls test body` (fun () -> (
       let spy = Spy.make () in
-      let was-run-prev = spy |> Spy.was-run in
-      let _ = test `Mock test case` (spy |> Spy.get-spy)
-        |> run in
-      (not was-run-prev && (spy |> Spy.was-run))
-      |> Expect.is-true
+      let _ = test `Mock test case` (spy |> Spy.get-spy) |> run in
+      spy |> Spy.was-run |> Expect.is-true
     ));
 
     test `describe calls all test cases` (fun () -> (
@@ -85,6 +82,9 @@ let result = describe `satysfi-test` [
   describe `Expect` [
     test `always-pass` (fun () -> (
       Expect.always-pass |> TestResult.is-pass |> assert
+    ));
+    test `always-fail` (fun () -> (
+      Expect.always-fail |> TestResult.is-pass |> (not) |> assert
     ));
     test `true passes when true is passed` (fun () -> (
       Expect.is-true true |> TestResult.is-pass |> assert
