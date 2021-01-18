@@ -14,7 +14,7 @@ jobs:
         run: |
           export HOME=/root
           eval $(opam env)
-          satysfi --text-mode "text" main.saty -o main.txt
+          satysfi --text-mode "text" test/main.test.saty -o main.txt
       - name: Check test results
         run: |
           cat main.txt | grep "0 fail"

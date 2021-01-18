@@ -1,4 +1,4 @@
-@import: test-result
+@import: ../../src/test-result
 
 module Spy : sig
 

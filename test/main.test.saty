@@ -1,8 +1,8 @@
-@import: expect
-@import: spy
-@import: test-case
-@import: test-result
-@import: test-suite-result
+@import: lib/spy
+@import: ../src/expect
+@import: ../src/test-case
+@import: ../src/test-result
+@import: ../src/test-suite-result
 
 % Todo
 % x call test method
