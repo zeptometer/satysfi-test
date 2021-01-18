@@ -9,6 +9,7 @@
 % x multiple tests
 % x count test runs
 % x count failure results
+% aggregate which test ran and failed
 
 open TestCase in
 let result = describe `satysfi-test` [
