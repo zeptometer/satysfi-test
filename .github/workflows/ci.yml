@@ -10,11 +10,14 @@ jobs:
       image: amutake/satysfi:latest
     steps:
       - uses: actions/checkout@v1
-      - name: Run regression tests
+      - name: Run tests
         run: |
           export HOME=/root
           eval $(opam env)
           satysfi --text-mode "text" main.saty -o main.txt
+      - name: Check test results
+        run: |
+          cat main.txt | grep "0 fail"
       - name: Install Apt dependencies
         run: apt-get update && apt-get install -y xz-utils liblzma-dev
       - name: Upload artifact
