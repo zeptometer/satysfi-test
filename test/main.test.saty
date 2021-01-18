@@ -1,5 +1,6 @@
 @import: lib/spy
 @import: ../src/expect
+@import: ../src/interface
 @import: ../src/test-case
 @import: ../src/test-run-result
 
@@ -12,7 +13,7 @@
 % toplevel function for convert TestRunResult to readble output
 
 open TestCase in
-let result = describe `satysfi-test` [
+Interface.execute (describe `satysfi-test` [
   describe `Spy` [
     test `was-run is false initially` (fun () -> (
       let spy = Spy.make () in
@@ -109,17 +110,4 @@ let result = describe `satysfi-test` [
       Expect.is-false true |> ExpectResult.is-pass |> (not) |> assert
     ));
   ]
-] |> run in
-
-let stringify-result result =
-  open TestRunResult in
-  let run-count = result |> count-run in
-  let success-count = result |> count-success in
-  #`Test result : `#
-  ^ (arabic run-count) ^ #` run, `#
-  ^ (arabic success-count) ^ #` success, `#
-  ^ (arabic (run-count - success-count)) ^ #` fail`# in
-
-let message = result |> stringify-result in
-let () = message |> display-message in
-message
+])

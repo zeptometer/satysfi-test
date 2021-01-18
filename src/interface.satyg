@@ -1,0 +1,24 @@
+@import: test-case
+@import: test-run-result
+
+module Interface : sig
+
+  val execute : TestCase.t -> string
+
+end = struct
+
+  let stringify-result result =
+    open TestRunResult in
+    let run-count = result |> count-run in
+    let success-count = result |> count-success in
+    #`Test result : `#
+    ^ (arabic run-count) ^ #` run, `#
+    ^ (arabic success-count) ^ #` success, `#
+    ^ (arabic (run-count - success-count)) ^ #` fail`#
+
+  let execute test =
+    let result = test |> TestCase.run |> stringify-result in
+    let () = result |> display-message in
+    result
+
+end
