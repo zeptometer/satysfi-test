@@ -109,5 +109,16 @@ Interface.execute (describe `satysfi-test` [
     test `false fails when true is passed` (fun () -> (
       Expect.is-false true |> ExpectResult.is-pass |> (not) |> assert
     ));
-  ]
+  ];
+
+  test `Interface` (fun () -> (
+    let expected = `Test result : 2 run, 1 success, 1 fail` in
+    let () = display-message `Start mock test -->` in
+    let actual = describe `Mock test suite` [
+      test `1` (fun () -> Expect.always-pass);
+      test `2` (fun () -> Expect.always-fail);
+    ] |> Interface.execute in
+    let () = display-message `<-- End mock test` in
+    (actual |> string-same expected) |> Expect.is-true
+  ));
 ])
