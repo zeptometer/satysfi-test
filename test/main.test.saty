@@ -9,6 +9,7 @@
 % x count test runs
 % x count failure results
 % aggregate which test ran and failed
+% toplevel function for convert TestRunResult to readble output
 
 open TestCase in
 let result = describe `satysfi-test` [
