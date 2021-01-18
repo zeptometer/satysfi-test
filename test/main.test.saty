@@ -10,18 +10,19 @@
 % x count failure results
 % aggregate which test ran and failed
 
-open Test in
+open TestCase in
 let result = describe `satysfi-test` [
   describe `Spy` [
     test `was-run is false initially` (fun () -> (
       let spy = Spy.make () in
       spy |> Spy.was-run |> Expect.is-false
     ));
+
     test `was-run is true when test-fun is called` (fun () -> (
       let spy = Spy.make () in
       let _ = (spy |> Spy.get-spy) () in
       spy |> Spy.was-run |> Expect.is-true
-    ))
+    ));
   ];
 
   describe `Test` [
@@ -53,6 +54,7 @@ let result = describe `satysfi-test` [
       && (result |> TestRunResult.count-success) == 1
       |> Expect.is-true
     ));
+
     test `1 failure with a single failing test case` (fun () -> (
       let result = test `Mock test case` (fun () -> (
        Expect.always-fail
@@ -61,6 +63,7 @@ let result = describe `satysfi-test` [
       && (result |> TestRunResult.count-success) == 0
       |> Expect.is-true
     ));
+
     test `describe aggregates TestRunResult` (fun () -> (
       let result = describe `Mock describe` [
         test `success 1` (fun () -> Expect.always-pass);
@@ -82,20 +85,25 @@ let result = describe `satysfi-test` [
   let assert b = if b then ExpectResult.pass else  ExpectResult.fail in
   describe `Expect` [
     test `always-pass` (fun () -> (
-      Expect.always-pass |> ExpectResult.is-pass |> assert
+      Expect.always-pass|> ExpectResult.is-pass |> assert
     ));
+
     test `always-fail` (fun () -> (
       Expect.always-fail |> ExpectResult.is-pass |> (not) |> assert
     ));
+
     test `true passes when true is passed` (fun () -> (
       Expect.is-true true |> ExpectResult.is-pass |> assert
     ));
+
     test `true fails when false is passed` (fun () -> (
       Expect.is-true false |> ExpectResult.is-pass |> (not) |> assert
     ));
+
     test `false passes when false is passed` (fun () -> (
       Expect.is-false false |> ExpectResult.is-pass |> assert
     ));
+
     test `false fails when true is passed` (fun () -> (
       Expect.is-false true |> ExpectResult.is-pass |> (not) |> assert
     ));

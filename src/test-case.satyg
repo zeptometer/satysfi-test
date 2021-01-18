@@ -3,7 +3,7 @@
 @import: expect
 @import: test-run-result
 
-module Test : sig
+module TestCase : sig
 
   type t
 
@@ -47,4 +47,5 @@ end = struct
       name = name;
       test-runner = test-runner;
     |)
+
 end
