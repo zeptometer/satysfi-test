@@ -1,28 +1,28 @@
 @require: list
 
-@import: test-result
-@import: test-suite-result
+@import: expect
+@import: test-run-result
 
-module TestCase : sig
+module Test : sig
 
   type t
 
   val describe : string -> t list -> t
-  val test : string -> (unit -> TestResult.t) -> t
-  val run : t -> TestSuiteResult.t
+  val test : string -> (unit -> ExpectResult.t) -> t
+  val run : t -> TestRunResult.t
 
 end = struct
 
-  type s = (| name : string; test-runner : unit -> TestSuiteResult.t |)
+  type s = (| name : string; test-runner : unit -> TestRunResult.t |)
   type t = s
 
   let test name test-body =
     let test-runner () =
       let result = test-body () in
-      if result |> TestResult.is-pass then
-        TestSuiteResult.make (| run = 1; success = 1 |)
+      if result |> ExpectResult.is-pass then
+        TestRunResult.make (| run = 1; success = 1 |)
       else
-        TestSuiteResult.make (| run = 1; success = 0 |) in
+        TestRunResult.make (| run = 1; success = 0 |) in
     (|
       name = name;
       test-runner = test-runner;
@@ -32,13 +32,13 @@ end = struct
 
   let describe name test-cases =
     let combine-result a b =
-      open TestSuiteResult in
+      open TestRunResult in
       make (|
         run = (count-run a + count-run b);
         success = (count-success a + count-success b);
       |) in
     let empty-result =
-      TestSuiteResult.make (| run = 0; success = 0 |) in
+      TestRunResult.make (| run = 0; success = 0 |) in
     let test-runner () =
       test-cases
       |> List.map run

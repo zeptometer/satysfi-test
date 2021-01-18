@@ -1,19 +1,37 @@
-@import: test-result
+module ExpectResult : sig
 
-module Expect : sig
+  type t
 
-  val always-pass : TestResult.t
-  val always-fail : TestResult.t
+  val pass : t
+  val fail : t
 
-  val is-true : bool -> TestResult.t
-  val is-false : bool -> TestResult.t
+  val is-pass : t -> bool
 
 end = struct
 
-  let always-pass = TestResult.pass
-  let always-fail = TestResult.fail
+  type t = bool
 
-  let is-true b = if b then TestResult.pass else TestResult.fail
-  let is-false b = if b then TestResult.fail else TestResult.pass
+  let pass = true
+  let fail = false
+
+  let is-pass result = result
+
+end
+
+module Expect : sig
+
+  val always-pass : ExpectResult.t
+  val always-fail : ExpectResult.t
+
+  val is-true : bool -> ExpectResult.t
+  val is-false : bool -> ExpectResult.t
+
+end = struct
+
+  let always-pass = ExpectResult.pass
+  let always-fail = ExpectResult.fail
+
+  let is-true b = if b then ExpectResult.pass else ExpectResult.fail
+  let is-false b = if b then ExpectResult.fail else ExpectResult.pass
 
 end

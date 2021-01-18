@@ -1,23 +1,23 @@
-@import: ../../src/test-result
+@import: ../../src/expect
 
 module Spy : sig
 
   type t
 
   val make : unit -> t
-  val get-spy : t -> (unit -> TestResult.t)
+  val get-spy : t -> (unit -> ExpectResult.t)
   val was-run : t -> bool
 
 end = struct
 
-  type s = (| was-run : bool ref; spy-fun : unit -> TestResult.t |)
+  type s = (| was-run : bool ref; spy-fun : unit -> ExpectResult.t |)
   type t = s
 
   let make () =
     let-mutable was-run <- false in
     let spy-fun = (fun () -> (
       let () = was-run <- true in
-      TestResult.pass)) in
+      ExpectResult.pass)) in
     (| was-run = was-run; spy-fun = spy-fun |)
 
   let get-spy spy = spy#spy-fun

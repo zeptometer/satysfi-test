@@ -1,8 +1,7 @@
 @import: lib/spy
 @import: ../src/expect
 @import: ../src/test-case
-@import: ../src/test-result
-@import: ../src/test-suite-result
+@import: ../src/test-run-result
 
 % Todo
 % x call test method
@@ -11,7 +10,7 @@
 % x count failure results
 % aggregate which test ran and failed
 
-open TestCase in
+open Test in
 let result = describe `satysfi-test` [
   describe `Spy` [
     test `was-run is false initially` (fun () -> (
@@ -25,7 +24,7 @@ let result = describe `satysfi-test` [
     ))
   ];
 
-  describe `TestCase` [
+  describe `Test` [
     test `test calls test body` (fun () -> (
       let spy = Spy.make () in
       let _ = test `Mock test case` (spy |> Spy.get-spy) |> run in
@@ -45,31 +44,31 @@ let result = describe `satysfi-test` [
     ));
   ];
 
-  describe `TestSuiteResult` [
-    test `1 success with single successful TestCase` (fun () -> (
+  describe `TestRunResult` [
+    test `1 success with a single successful test case` (fun () -> (
       let result = test `Mock test case` (fun () -> (
         Expect.always-pass
       )) |> run in
-      (result |> TestSuiteResult.count-run) == 1
-      && (result |> TestSuiteResult.count-success) == 1
+      (result |> TestRunResult.count-run) == 1
+      && (result |> TestRunResult.count-success) == 1
       |> Expect.is-true
     ));
-    test `1 failure with single failure TestCase` (fun () -> (
+    test `1 failure with a single failing test case` (fun () -> (
       let result = test `Mock test case` (fun () -> (
        Expect.always-fail
       )) |> run in
-      (result |> TestSuiteResult.count-run) == 1
-      && (result |> TestSuiteResult.count-success) == 0
+      (result |> TestRunResult.count-run) == 1
+      && (result |> TestRunResult.count-success) == 0
       |> Expect.is-true
     ));
-    test `describe aggregates TestSuiteResult` (fun () -> (
+    test `describe aggregates TestRunResult` (fun () -> (
       let result = describe `Mock describe` [
         test `success 1` (fun () -> Expect.always-pass);
         test `success 2` (fun () -> Expect.always-pass);
         test `fail 3` (fun () -> Expect.always-fail);
       ] |> run in
-      (result |> TestSuiteResult.count-run) == 3
-      && (result |> TestSuiteResult.count-success) == 2
+      (result |> TestRunResult.count-run) == 3
+      && (result |> TestRunResult.count-success) == 2
       |> Expect.is-true
     ))
   ];
@@ -79,31 +78,32 @@ let result = describe `satysfi-test` [
   %   Expect.always-fail
   % ));
 
-  let assert b = if b then TestResult.pass else  TestResult.fail in
+  % We cannot use Expect because it's the very test subject!
+  let assert b = if b then ExpectResult.pass else  ExpectResult.fail in
   describe `Expect` [
     test `always-pass` (fun () -> (
-      Expect.always-pass |> TestResult.is-pass |> assert
+      Expect.always-pass |> ExpectResult.is-pass |> assert
     ));
     test `always-fail` (fun () -> (
-      Expect.always-fail |> TestResult.is-pass |> (not) |> assert
+      Expect.always-fail |> ExpectResult.is-pass |> (not) |> assert
     ));
     test `true passes when true is passed` (fun () -> (
-      Expect.is-true true |> TestResult.is-pass |> assert
+      Expect.is-true true |> ExpectResult.is-pass |> assert
     ));
     test `true fails when false is passed` (fun () -> (
-      Expect.is-true false |> TestResult.is-pass |> (not) |> assert
+      Expect.is-true false |> ExpectResult.is-pass |> (not) |> assert
     ));
     test `false passes when false is passed` (fun () -> (
-      Expect.is-false false |> TestResult.is-pass |> assert
+      Expect.is-false false |> ExpectResult.is-pass |> assert
     ));
     test `false fails when true is passed` (fun () -> (
-      Expect.is-false true |> TestResult.is-pass |> (not) |> assert
+      Expect.is-false true |> ExpectResult.is-pass |> (not) |> assert
     ));
   ]
 ] |> run in
 
 let stringify-result result =
-  open TestSuiteResult in
+  open TestRunResult in
   let run-count = result |> count-run in
   let success-count = result |> count-success in
   #`Test result : `#

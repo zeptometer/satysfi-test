@@ -1,4 +1,4 @@
-module TestSuiteResult : sig
+module TestRunResult : sig
 
   type t
 
