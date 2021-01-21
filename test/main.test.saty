@@ -2,6 +2,7 @@
 @import: ../src/expect
 @import: ../src/interface
 @import: ../src/test-case
+@import: ../src/test-case-result
 @import: ../src/test-run-result
 
 % Todo
@@ -54,6 +55,13 @@ Interface.execute (describe `satysfi-test` [
       )) |> run in
       (result |> TestRunResult.count-run) == 1
       && (result |> TestRunResult.count-success) == 1
+      && (let expected-case-result = (TestCaseResult.of-test (|
+        description = `Mock test case`;
+        status = TestCaseResultStatus.success
+      |)) in
+      (result
+        |> TestRunResult.get-detail
+        |> TestCaseResult.eq expected-case-result))
       |> Expect.is-true
     ));
 

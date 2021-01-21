@@ -1,3 +1,5 @@
+@import: test-case-result
+
 module TestRunResult : sig
 
   type t
@@ -6,6 +8,7 @@ module TestRunResult : sig
 
   val count-run : t -> int
   val count-success : t -> int
+  val get-detail : t -> TestCaseResult.t
 
 end = struct
 
@@ -16,5 +19,10 @@ end = struct
   let count-run result = result#run
 
   let count-success result = result#success
+
+  let get-detail result = TestCaseResult.of-test (|
+    description = `hello!`;
+    status = TestCaseResultStatus.fail;
+  |)
 
 end
