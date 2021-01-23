@@ -1,6 +1,7 @@
 @require: list
 
 @import: expect
+@import: test-case-result
 @import: test-run-result
 
 module TestCase : sig
@@ -13,38 +14,63 @@ module TestCase : sig
 
 end = struct
 
-  type s = (| name : string; test-runner : unit -> TestRunResult.t |)
+  type s = (| description : string; test-runner : unit -> TestRunResult.t |)
   type t = s
 
-  let test name test-body =
+  let test description test-body =
     let test-runner () =
       let result = test-body () in
       if result |> ExpectResult.is-pass then
-        TestRunResult.make (| run = 1; success = 1 |)
+        let case-result = TestCaseResult.of-test (|
+          description = description;
+          status = TestCaseResultStatus.success;
+        |) in
+        TestRunResult.make (|
+          run = 1;
+          success = 1;
+          detail = case-result
+        |)
       else
-        TestRunResult.make (| run = 1; success = 0 |) in
+        let case-result = TestCaseResult.of-test (|
+          description = description;
+          status = TestCaseResultStatus.fail;
+        |) in
+        TestRunResult.make (|
+          run = 1;
+          success = 0;
+          detail = case-result;
+        |) in
     (|
-      name = name;
+      description = description;
       test-runner = test-runner;
     |)
 
   let run test-case = test-case#test-runner ()
 
-  let describe name test-cases =
+  let describe description test-cases =
+    let mock-test-case-result = TestCaseResult.of-test (|
+          description = `hoge`;
+          status = TestCaseResultStatus.success;
+        |) in
     let combine-result a b =
       open TestRunResult in
       make (|
         run = (count-run a + count-run b);
         success = (count-success a + count-success b);
+        detail = mock-test-case-result;
       |) in
     let empty-result =
-      TestRunResult.make (| run = 0; success = 0 |) in
+      TestRunResult.make (|
+        run = 0;
+        success = 0;
+        detail = mock-test-case-result;
+    |) in
     let test-runner () =
       test-cases
       |> List.map run
       |> List.fold-left combine-result empty-result in
     (|
-      name = name;
+      description = description;
       test-runner = test-runner;
     |)
 

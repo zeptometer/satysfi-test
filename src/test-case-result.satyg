@@ -1,0 +1,56 @@
+module TestCaseResultStatus : sig
+
+  type t
+
+  val success : t
+  val fail : t
+  val eq : t -> t -> bool
+
+end = struct
+
+  type s = Success | Fail
+  type t = s
+
+  let success = Success
+
+  let fail = Fail
+
+  let eq a b =
+    match a with
+    | Success -> (
+      match b with
+      | Success -> true
+      | Fail -> false)
+    | Fail -> (
+      match b with
+      | Success -> false
+      | Fail -> true)
+
+end
+
+module TestCaseResult : sig
+
+  type t
+
+  val of-test : (|
+    description : string;
+    status : TestCaseResultStatus.t
+  |) -> t
+
+  val eq : t -> t -> bool
+
+end = struct
+
+  type s = (|
+    description : string;
+    status : TestCaseResultStatus.t
+  |)
+  type t = s
+
+  let of-test result = result
+
+  let eq a b =
+    (string-same a#description b#description)
+    && (TestCaseResultStatus.eq a#status b#status)
+
+end

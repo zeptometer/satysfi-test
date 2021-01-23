@@ -4,7 +4,11 @@ module TestRunResult : sig
 
   type t
 
-  val make : (| run : int; success : int |) -> t
+  val make : (|
+    run : int;
+    success : int;
+    detail: TestCaseResult.t
+  |) -> t
 
   val count-run : t -> int
   val count-success : t -> int
@@ -12,7 +16,12 @@ module TestRunResult : sig
 
 end = struct
 
-  type t = (| run : int; success : int |)
+  type s = (|
+    run : int;
+    success : int;
+    detail: TestCaseResult.t
+  |)
+  type t = s
 
   let make result = result
 
@@ -20,9 +29,6 @@ end = struct
 
   let count-success result = result#success
 
-  let get-detail result = TestCaseResult.of-test (|
-    description = `hello!`;
-    status = TestCaseResultStatus.fail;
-  |)
+  let get-detail result = result#detail
 
 end
