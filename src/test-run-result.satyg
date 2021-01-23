@@ -14,6 +14,8 @@ module TestRunResult : sig
   val count-success : t -> int
   val get-detail : t -> TestCaseResult.t
 
+  val eq : t -> t -> bool
+
 end = struct
 
   type s = (|
@@ -30,5 +32,10 @@ end = struct
   let count-success result = result#success
 
   let get-detail result = result#detail
+
+  let eq a b =
+    (count-run a == count-run b)
+    && (count-success a == count-success b)
+    && (TestCaseResult.eq (get-detail a) (get-detail b))
 
 end

@@ -50,27 +50,36 @@ Interface.execute (describe `satysfi-test` [
 
   describe `TestRunResult` [
     test `1 success with a single successful test case` (fun () -> (
-      let result = test `Mock test case` (fun () -> (
+      let expected = TestRunResult.make (|
+        run = 1;
+        success = 1;
+        detail = TestCaseResult.of-test (|
+          description = `Mock test case`;
+          status = TestCaseResultStatus.success
+        |);
+      |) in
+      let actual = test `Mock test case` (fun () -> (
         Expect.always-pass
       )) |> run in
-      (result |> TestRunResult.count-run) == 1
-      && (result |> TestRunResult.count-success) == 1
-      && (let expected-case-result = (TestCaseResult.of-test (|
-        description = `Mock test case`;
-        status = TestCaseResultStatus.success
-      |)) in
-      (result
-        |> TestRunResult.get-detail
-        |> TestCaseResult.eq expected-case-result))
+      actual
+      |> TestRunResult.eq expected
       |> Expect.is-true
     ));
 
     test `1 failure with a single failing test case` (fun () -> (
-      let result = test `Mock test case` (fun () -> (
+      let expected = TestRunResult.make (|
+        run = 1;
+        success = 0;
+        detail = TestCaseResult.of-test (|
+          description = `Mock test case`;
+          status = TestCaseResultStatus.fail
+        |);
+      |) in
+      let actual = test `Mock test case` (fun () -> (
        Expect.always-fail
       )) |> run in
-      (result |> TestRunResult.count-run) == 1
-      && (result |> TestRunResult.count-success) == 0
+      actual
+      |> TestRunResult.eq expected
       |> Expect.is-true
     ));
 
