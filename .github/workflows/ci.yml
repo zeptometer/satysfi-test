@@ -14,14 +14,11 @@ jobs:
         run: |
           export HOME=/root
           eval $(opam env)
-          satysfi --text-mode "text" test/main.test.saty -o main.txt
-      - name: Check test results
-        run: |
-          cat main.txt | grep "0 fail"
+          cd test && sh run-test.sh
       - name: Install Apt dependencies
         run: apt-get update && apt-get install -y xz-utils liblzma-dev
       - name: Upload artifact
         uses: actions/upload-artifact@master
         with:
           name: yabai2020w
-          path: main.txt
+          path: test/report.txt
