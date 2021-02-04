@@ -15,7 +15,8 @@ jobs:
           export HOME=/root
           eval $(opam env)
           cd test && sh run-test.sh
-      - name: Install Apt dependencies
+      - if: always()
+        name: Install Apt dependencies
         run: apt-get update && apt-get install -y xz-utils liblzma-dev
       - name: Upload artifact
         uses: actions/upload-artifact@master
