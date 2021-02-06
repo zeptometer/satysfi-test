@@ -129,13 +129,23 @@ Interface.execute (describe `satysfi-test` [
   ];
 
   test `Interface` (fun () -> (
-    let expected = `Test result : 2 run, 1 success, 1 fail
+    let expected = `Test summary : 3 run, 2 success, 1 fail
+
+Test run report
+- mock test suite
+  - test case 1 -> PASS
+  - nested describe
+    - test case 2 -> FAIL
+    - test case 3 -> PASS
 
 `# in
     let () = display-message `Start mock test -->` in
-    let actual = describe `Mock test suite` [
-      test `1` (fun () -> Expect.always-pass);
-      test `2` (fun () -> Expect.always-fail);
+    let actual = describe `mock test suite` [
+      test `test case 1` (fun () -> Expect.always-pass);
+      describe `nested describe` [
+        test `test case 2` (fun () -> Expect.always-fail);
+        test `test case 3` (fun () -> Expect.always-pass);
+      ]
     ] |> Interface.execute in
     let () = display-message `<-- End mock test` in
     (actual |> string-same expected) |> Expect.is-true

@@ -7,21 +7,35 @@ module Interface : sig
 
 end = struct
 
-  let stringify-result result =
+  let newline = `
+
+`#
+
+  let make-test-summary result =
     open TestRunResult in
     let run-count = result |> count-run in
     let success-count = result |> count-success in
-    #`Test result : `#
+    #`Test summary : `#
     ^ (arabic run-count) ^ #` run, `#
     ^ (arabic success-count) ^ #` success, `#
     ^ (arabic (run-count - success-count)) ^ #` fail`#
-    ^ #`
+    ^ newline
+
+  let make-test-report result = `Test run report
+- mock test suite
+  - test case 1 -> PASS
+  - nested describe
+    - test case 2 -> FAIL
+    - test case 3 -> PASS
 
 `#
 
   let execute test =
-    let result = test |> TestCase.run |> stringify-result in
-    let () = result |> display-message in
-    result
+    let run-result = test |> TestCase.run in
+    let summary-text = run-result |> make-test-summary in
+    let report-text = run-result |> make-test-report in
+    let output = summary-text ^ newline ^ report-text in
+    let () =  output |> display-message in
+    output
 
 end
