@@ -1,0 +1,26 @@
+@import: lib/spy
+@import: ../src/expect
+@import: ../src/interface
+@import: ../src/test-case
+@import: ../src/test-case-result
+@import: ../src/test-run-result
+
+let interface-test-cases =
+  open TestCase in
+  describe `Interface` [
+    test `generates a report for single test case` (fun () -> (
+      Expect.always-pass % FIXME!
+    ));
+    test `integration works` (fun () -> (
+      let expected = `Test summary : 1 run, 1 success, 0 fail
+
+Test run report
+- mock test case -> PASS
+
+`# in
+      let () = display-message `Start mock test -->` in
+      let actual = test `test case 1` (fun () -> Expect.always-pass)
+        |> Interface.execute in
+      let () = display-message `<-- End mock test` in
+      (actual |> string-same expected) |> Expect.is-true));
+  ]

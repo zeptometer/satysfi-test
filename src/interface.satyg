@@ -22,11 +22,7 @@ end = struct
     ^ newline
 
   let make-test-report result = `Test run report
-- mock test suite
-  - test case 1 -> PASS
-  - nested describe
-    - test case 2 -> FAIL
-    - test case 3 -> PASS
+- mock test case -> PASS
 
 `#
 
