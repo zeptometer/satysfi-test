@@ -2,5 +2,10 @@
 
 rm -rf report.txt
 satysfi --text-mode "text" main.test.saty -o report.txt
-cat report.txt
-cat report.txt | grep "0 fail" > /dev/null
+
+if [ -e report.txt ]; then
+	cat report.txt
+	cat report.txt | grep "0 fail" > /dev/null
+else
+	exit 1
+fi
