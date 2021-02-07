@@ -1,6 +1,6 @@
 @import: expect
-@import: test-case
-@import: test-report-maker
+@import: internal/test-case
+@import: internal/test-report-maker
 
 module Test : sig
 

@@ -1,3 +1,4 @@
+@import: ../src/expect
 @import: ../src/test
 
 open Test

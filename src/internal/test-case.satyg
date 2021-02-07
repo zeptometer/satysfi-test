@@ -1,6 +1,6 @@
 @require: list
 
-@import: expect
+@import: ../expect
 @import: test-case-result
 @import: test-run-result
 
