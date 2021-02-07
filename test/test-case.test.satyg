@@ -1,8 +1,10 @@
 @import: ../src/test-case
+@import: ../src/test-case-result
+@import: ../src/test-run-result
 
 let test-case-tests = open TestCase in
-  describe `TestRunResult` [
-    test `1 success with a single successful test case` (fun () -> (
+  describe `TestCase` [
+    test `makes a result for a successful test case` (fun () -> (
       let expected = TestRunResult.make (|
         run = 1;
         success = 1;
@@ -19,7 +21,7 @@ let test-case-tests = open TestCase in
       |> Expect.is-true
     ));
 
-    test `1 failure with a single failing test case` (fun () -> (
+    test `makes a result for a failing test case` (fun () -> (
       let expected = TestRunResult.make (|
         run = 1;
         success = 0;
@@ -36,14 +38,39 @@ let test-case-tests = open TestCase in
       |> Expect.is-true
     ));
 
-    test `describe aggregates TestRunResult` (fun () -> (
-      let result = describe `Mock describe` [
+    %% FIXME!
+    test `makes a result for multiple test cases` (fun () -> (
+      let expected = TestRunResult.make (|
+        run = 3;
+        success = 2;
+        detail = open TestCaseResult in
+          of-describe (|
+            description = `Mock describe`;
+            results = [
+              of-test (|
+                description = `success 1`;
+                status = TestCaseResultStatus.success;
+              |);
+              of-test (|
+                description = `success 2`;
+                status = TestCaseResultStatus.success;
+              |);
+              of-test (|
+                description = `fail 3`;
+                status = TestCaseResultStatus.fail;
+              |);
+            ]
+          |);
+      |) in
+
+      let actual = describe `Mock describe` [
         test `success 1` (fun () -> Expect.always-pass);
         test `success 2` (fun () -> Expect.always-pass);
         test `fail 3` (fun () -> Expect.always-fail);
       ] |> run in
-      (result |> TestRunResult.count-run) == 3
-      && (result |> TestRunResult.count-success) == 2
+
+      actual
+      |> TestRunResult.eq expected
       |> Expect.is-true
     ))
   ]

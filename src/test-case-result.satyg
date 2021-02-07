@@ -4,6 +4,7 @@ module TestCaseResultStatus : sig
 
   val success : t
   val fail : t
+
   val cases : (| success : unit -> 'a; fail : unit -> 'a |) -> t -> 'a
   val eq : t -> t -> bool
 

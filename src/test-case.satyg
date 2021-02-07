@@ -48,27 +48,25 @@ end = struct
   let run test-case = test-case#test-runner ()
 
   let describe description test-cases =
-    let mock-test-case-result = TestCaseResult.of-test (|
-          description = `(WARNING THIS IS MOCK TEST RESULT)`;
-          status = TestCaseResultStatus.success;
+    let concat-results results =
+      let run = results |> List.map TestRunResult.count-run
+        |> List.fold-left (+) 0 in
+      let success = results |> List.map TestRunResult.count-success
+        |> List.fold-left (+) 0 in
+      let detail = TestCaseResult.of-describe (|
+          description = description;
+          results = results |> List.map TestRunResult.get-detail
         |) in
-    let combine-result a b =
-      open TestRunResult in
-      make (|
-        run = (count-run a + count-run b);
-        success = (count-success a + count-success b);
-        detail = mock-test-case-result;
-      |) in
-    let empty-result =
       TestRunResult.make (|
-        run = 0;
-        success = 0;
-        detail = mock-test-case-result;
-    |) in
+        run = run;
+        success = success;
+        detail = detail
+      |)
+    in
     let test-runner () =
       test-cases
       |> List.map run
-      |> List.fold-left combine-result empty-result in
+      |> concat-results in
     (|
       description = description;
       test-runner = test-runner;

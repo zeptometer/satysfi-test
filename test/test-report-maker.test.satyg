@@ -99,7 +99,7 @@ Test run report
       let expected = `Test summary : 1 run, 1 success, 0 fail
 
 Test run report
-- mock test case -> PASS
+- test case 1 -> PASS
 
 `# in
       let actual = test `test case 1` (fun () -> Expect.always-pass)
