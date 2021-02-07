@@ -1,7 +1,7 @@
 @import: test-case
 @import: test-run-result
 
-module Interface : sig
+module TestReportMaker : sig
 
   val make-report : TestRunResult.t -> string
 

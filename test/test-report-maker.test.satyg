@@ -1,14 +1,14 @@
 @import: lib/spy
 @import: ../src/expect
-@import: ../src/interface
+@import: ../src/test-report-maker
 @import: ../src/test-case
 @import: ../src/test-case-result
 @import: ../src/test-run-result
 
-let interface-test-cases =
+let test-report-maker-test-cases =
   open TestCase in
-  describe `Interface` [
-    test `generates a report for single test case` (fun () -> (
+  describe `TestReportMaker` [
+    test `makes a report for single test case` (fun () -> (
       let expected = `Test summary : 1 run, 1 success, 0 fail
 
 Test run report
@@ -23,7 +23,7 @@ Test run report
           status = TestCaseResultStatus.success;
         |)
       |) in
-      let actual = run-result |> Interface.make-report in
+      let actual = run-result |> TestReportMaker.make-report in
       actual |> string-same expected |> Expect.is-true
     ));
 
@@ -37,7 +37,7 @@ Test run report
       let () = display-message `Start mock test -->` in
       let actual = test `test case 1` (fun () -> Expect.always-pass)
         |> TestCase.run
-        |> Interface.make-report in
+        |> TestReportMaker.make-report in
       let () = display-message `<-- End mock test` in
       (actual |> string-same expected) |> Expect.is-true));
   ]
