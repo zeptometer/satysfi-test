@@ -1,0 +1,49 @@
+@import: ../src/test-case
+
+let test-case-tests = open TestCase in
+  describe `TestRunResult` [
+    test `1 success with a single successful test case` (fun () -> (
+      let expected = TestRunResult.make (|
+        run = 1;
+        success = 1;
+        detail = TestCaseResult.of-test (|
+          description = `Mock test case`;
+          status = TestCaseResultStatus.success
+        |);
+      |) in
+      let actual = test `Mock test case` (fun () -> (
+        Expect.always-pass
+      )) |> run in
+      actual
+      |> TestRunResult.eq expected
+      |> Expect.is-true
+    ));
+
+    test `1 failure with a single failing test case` (fun () -> (
+      let expected = TestRunResult.make (|
+        run = 1;
+        success = 0;
+        detail = TestCaseResult.of-test (|
+          description = `Mock test case`;
+          status = TestCaseResultStatus.fail
+        |);
+      |) in
+      let actual = test `Mock test case` (fun () -> (
+       Expect.always-fail
+      )) |> run in
+      actual
+      |> TestRunResult.eq expected
+      |> Expect.is-true
+    ));
+
+    test `describe aggregates TestRunResult` (fun () -> (
+      let result = describe `Mock describe` [
+        test `success 1` (fun () -> Expect.always-pass);
+        test `success 2` (fun () -> Expect.always-pass);
+        test `fail 3` (fun () -> Expect.always-fail);
+      ] |> run in
+      (result |> TestRunResult.count-run) == 3
+      && (result |> TestRunResult.count-success) == 2
+      |> Expect.is-true
+    ))
+  ]

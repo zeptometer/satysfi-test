@@ -5,7 +5,7 @@
 @import: ../src/test-case-result
 @import: ../src/test-run-result
 
-let test-report-maker-test-cases =
+let test-report-maker-tests =
   let test-report-for-single-test-success =
     `Test summary : 1 run, 1 success, 0 fail
 
