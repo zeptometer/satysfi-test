@@ -9,8 +9,24 @@ let interface-test-cases =
   open TestCase in
   describe `Interface` [
     test `generates a report for single test case` (fun () -> (
-      Expect.always-pass % FIXME!
+      let expected = `Test summary : 1 run, 1 success, 0 fail
+
+Test run report
+- mock test case -> PASS
+
+`# in
+      let run-result = TestRunResult.make (|
+        run = 1;
+        success = 1;
+        detail = TestCaseResult.of-test (|
+          description = `mock test case`;
+          result = TestCaseResultStatus.success;
+        |)
+      |) in
+      let actual = run-result |> Interface.make-test-report in
+      actual |> string-same expected |> Expected.is-true
     ));
+
     test `integration works` (fun () -> (
       let expected = `Test summary : 1 run, 1 success, 0 fail
 
