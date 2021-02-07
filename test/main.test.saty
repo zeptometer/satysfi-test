@@ -6,14 +6,6 @@
 @import: test-case.test
 @import: test-report-maker.test
 
-% Todo
-% x call test method
-% x multiple tests
-% x count test runs
-% x count failure results
-% aggregate which test ran and failed
-% toplevel function for convert TestRunResult to readble output
-
 open Test in
 describe `satysfi-test` [
   describe `Spy` [
