@@ -11,6 +11,8 @@ end = struct
 
 `#
 
+  let empty = ` `
+
   let make-summary result =
     open TestRunResult in
     let run-count = result |> count-run in
@@ -21,21 +23,46 @@ end = struct
     ^ (arabic (run-count - success-count)) ^ #` fail`#
     ^ newline
 
-  let make-detail result = result |> TestRunResult.get-detail
-    |> TestCaseResult.cases (|
-      single = (fun (single) -> (
-        `Test run report`
-        ^ newline
-        ^ `- `#
-        ^ single#description
-        ^ #` -> `#
-        ^ (single#status |> TestCaseResultStatus.cases (|
-          success = (fun () -> `PASS`);
-          fail = (fun () -> `FAIL`);
-        |))
-        ^ newline
-      ))
-    |)
+  let make-detail result =
+    let make-indent depth =
+      let-rec recur n cur =
+        if n == 0 then
+          cur
+        else
+          recur (n - 1) (cur ^ #`  `#) in
+      recur depth empty in
+
+    let-rec make-body depth current-body result = result
+      |> TestCaseResult.cases (|
+        test = (fun (test) -> (
+          current-body
+          ^ make-indent depth
+          ^ `- `#
+          ^ test#description
+          ^ #` -> `#
+          ^ (test#status |> TestCaseResultStatus.cases (|
+            success = (fun () -> `PASS`);
+            fail = (fun () -> `FAIL`);
+          |))
+          ^ newline
+        ));
+        describe = (fun (describe) -> (
+          let new-body = current-body
+            ^ make-indent depth
+            ^ `- `#
+            ^ describe#description
+            ^ newline in
+          List.fold-left (fun body child-result -> (
+            make-body (depth + 1) body child-result
+          )) new-body describe#results
+        ))
+      |) in
+
+    let head = `Test run report` ^ newline in
+    let body = result
+      |> TestRunResult.get-detail
+      |> make-body 0 empty in
+    head ^ body
 
   let make-report run-result =
     let summary-text = run-result |> make-summary in

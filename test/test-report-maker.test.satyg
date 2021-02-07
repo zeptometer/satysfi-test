@@ -13,11 +13,23 @@ Test run report
 - mock test case -> PASS
 
 `# in
+
   let test-report-for-single-test-fail =
-    `Test summary : 1 run, 0 success, 1  fail
+    `Test summary : 1 run, 0 success, 1 fail
 
 Test run report
 - mock test case -> FAIL
+
+`# in
+  let test-report-for-multi-tests =
+    `Test summary : 3 run, 2 success, 1 fail
+
+Test run report
+- level 1 describe
+  - test case at level 1 -> PASS
+  - level 2 describe
+    - test case at level 2 success -> PASS
+    - test case at level 2 fail -> FAIL
 
 `# in
 
@@ -45,6 +57,38 @@ Test run report
         detail = TestCaseResult.of-test (|
           description = `mock test case`;
           status = TestCaseResultStatus.fail;
+        |)
+      |) in
+      let actual = run-result |> TestReportMaker.make-report in
+      actual |> string-same expected |> Expect.is-true
+    ));
+
+    test `makes a report for multi test cases` (fun () -> (
+      let expected = test-report-for-multi-tests in
+      let run-result = TestRunResult.make (|
+        run = 3;
+        success = 2;
+        detail = open TestCaseResult in of-describe (|
+          description = `level 1 describe`;
+          results = [
+            of-test (|
+              description = `test case at level 1`;
+              status = TestCaseResultStatus.success;
+            |);
+            of-describe (|
+              description = `level 2 describe`;
+              results = [
+                of-test (|
+                  description = `test case at level 2 success`;
+                  status = TestCaseResultStatus.success;
+                |);
+                of-test (|
+                  description = `test case at level 2 fail`;
+                  status = TestCaseResultStatus.fail;
+               |);
+              ]
+            |)
+          ]
         |)
       |) in
       let actual = run-result |> TestReportMaker.make-report in

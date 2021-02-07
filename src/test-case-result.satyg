@@ -40,30 +40,75 @@ module TestCaseResult : sig
 
   val of-test : (|
     description : string;
-    status : TestCaseResultStatus.t
+    status : TestCaseResultStatus.t;
+  |) -> t
+
+  val of-describe : (|
+    description : string;
+    results : t list;
   |) -> t
 
   val cases : (|
-    single : (| description : string; status : TestCaseResultStatus.t |) -> 'a
+    test : (| description : string; status : TestCaseResultStatus.t |) -> 'a;
+    describe : (| description : string; results : t list |) -> 'a;
   |) -> t -> 'a
 
   val eq : t -> t -> bool
 
 end = struct
 
-  type s = (|
+  type s =
+  | TEST of (|
     description : string;
     status : TestCaseResultStatus.t
   |)
+  | DESCRIBE of (|
+    description : string;
+    results : s list;
+  |)
   type t = s
 
-  let of-test result = result
+  let of-test result = TEST(result)
+  let of-describe result = DESCRIBE(result)
 
   let cases branches result =
-    result |> branches#single
+    match result with
+    | TEST test-result -> branches#test test-result
+    | DESCRIBE describe-result -> branches#describe describe-result
 
-  let eq a b =
-    (string-same a#description b#description)
-    && (TestCaseResultStatus.eq a#status b#status)
+  let-rec same-results a b =
+    match a with
+    | [] -> (match b with
+      | [] -> true
+      | _ -> false)
+    | x :: xs -> (match b with
+      | [] -> false
+      | y :: ys -> (
+        if eq x y then
+          same-results xs ys
+        else
+          false
+      ))
+
+  and eq a b = a |> cases (|
+    test = (fun (a-test) -> (
+      b |> cases (|
+        test = (fun (b-test) -> (
+          string-same a-test#description b-test#description
+          && (TestCaseResultStatus.eq a-test#status b-test#status)
+        ));
+        describe = (fun _ -> false)
+      |)
+    ));
+    describe = (fun (a-describe) -> (
+      b |> cases (|
+        test = (fun _ -> false);
+        describe = (fun (b-describe) -> (
+          string-same a-describe#description b-describe#description
+          && same-results a-describe#results b-describe#results
+        ))
+      |)
+    ));
+  |)
 
 end
