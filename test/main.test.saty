@@ -5,6 +5,7 @@
 @import: ../src/test-report-maker
 @import: ../src/test-run-result
 
+@import: integration.test
 @import: test-case.test
 @import: test-report-maker.test
 
@@ -67,23 +68,25 @@ TestReportMaker.make-report (TestCase.run (describe `satysfi-test` [
       Expect.always-fail |> ExpectResult.is-pass |> (not) |> assert
     ));
 
-    test `true passes when true is passed` (fun () -> (
+    test `true passes when true given` (fun () -> (
       Expect.is-true true |> ExpectResult.is-pass |> assert
     ));
 
-    test `true fails when false is passed` (fun () -> (
+    test `true fails when false given` (fun () -> (
       Expect.is-true false |> ExpectResult.is-pass |> (not) |> assert
     ));
 
-    test `false passes when false is passed` (fun () -> (
+    test `false passes when false given` (fun () -> (
       Expect.is-false false |> ExpectResult.is-pass |> assert
     ));
 
-    test `false fails when true is passed` (fun () -> (
+    test `false fails when true given` (fun () -> (
       Expect.is-false true |> ExpectResult.is-pass |> (not) |> assert
     ));
   ];
 
   test-case-tests;
   test-report-maker-tests;
+
+  integration-tests;
 ]))

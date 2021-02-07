@@ -35,7 +35,7 @@ Test run report
 
   open TestCase in
   describe `TestReportMaker` [
-    test `makes a report for a successful test case` (fun () -> (
+    test `makes a report for a successful test result` (fun () -> (
       let expected = test-report-for-single-test-success in
       let run-result = TestRunResult.make (|
         run = 1;
@@ -49,7 +49,7 @@ Test run report
       actual |> string-same expected |> Expect.is-true
     ));
 
-    test `makes a report for a failing test case` (fun () -> (
+    test `makes a report for a failing test result` (fun () -> (
       let expected = test-report-for-single-test-fail in
       let run-result = TestRunResult.make (|
         run = 1;
@@ -63,7 +63,7 @@ Test run report
       actual |> string-same expected |> Expect.is-true
     ));
 
-    test `makes a report for multi test cases` (fun () -> (
+    test `makes a report for multi test result` (fun () -> (
       let expected = test-report-for-multi-tests in
       let run-result = TestRunResult.make (|
         run = 3;
@@ -94,16 +94,4 @@ Test run report
       let actual = run-result |> TestReportMaker.make-report in
       actual |> string-same expected |> Expect.is-true
     ));
-
-    test `integration works` (fun () -> (
-      let expected = `Test summary : 1 run, 1 success, 0 fail
-
-Test run report
-- test case 1 -> PASS
-
-`# in
-      let actual = test `test case 1` (fun () -> Expect.always-pass)
-        |> TestCase.run
-        |> TestReportMaker.make-report in
-      (actual |> string-same expected) |> Expect.is-true));
   ]
