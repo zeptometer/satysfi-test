@@ -49,7 +49,7 @@ end = struct
 
   let describe description test-cases =
     let mock-test-case-result = TestCaseResult.of-test (|
-          description = `hoge`;
+          description = `(WARNING THIS IS MOCK TEST RESULT)`;
           status = TestCaseResultStatus.success;
         |) in
     let combine-result a b =
