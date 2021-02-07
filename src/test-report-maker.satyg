@@ -21,10 +21,21 @@ end = struct
     ^ (arabic (run-count - success-count)) ^ #` fail`#
     ^ newline
 
-  let make-detail result = `Test run report
-- mock test case -> PASS
-
-`#
+  let make-detail result = result |> TestRunResult.get-detail
+    |> TestCaseResult.cases (|
+      single = (fun (single) -> (
+        `Test run report`
+        ^ newline
+        ^ `- `#
+        ^ single#description
+        ^ #` -> `#
+        ^ (single#status |> TestCaseResultStatus.cases (|
+          success = (fun () -> `PASS`);
+          fail = (fun () -> `FAIL`);
+        |))
+        ^ newline
+      ))
+    |)
 
   let make-report run-result =
     let summary-text = run-result |> make-summary in
