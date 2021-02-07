@@ -9,7 +9,6 @@ module TestCase : sig
   type t
 
   val test : string -> (unit -> ExpectResult.t) -> t
-  val it : string -> (unit -> ExpectResult.t) -> t
   val describe : string -> t list -> t
   val run : t -> TestRunResult.t
 
@@ -45,8 +44,6 @@ end = struct
       description = description;
       test-runner = test-runner;
     |)
-
-  let it = test
 
   let run test-case = test-case#test-runner ()
 

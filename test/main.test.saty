@@ -1,9 +1,5 @@
 @import: lib/spy
-@import: ../src/expect
-@import: ../src/test-case
-@import: ../src/test-case-result
-@import: ../src/test-report-maker
-@import: ../src/test-run-result
+@import: ../src/test
 
 @import: integration.test
 @import: test-case.test
@@ -17,8 +13,8 @@
 % aggregate which test ran and failed
 % toplevel function for convert TestRunResult to readble output
 
-open TestCase in
-TestReportMaker.make-report (TestCase.run (describe `satysfi-test` [
+open Test in
+describe `satysfi-test` [
   describe `Spy` [
     it `was-run is false initially` (fun () -> (
       let spy = Spy.make () in
@@ -89,4 +85,4 @@ TestReportMaker.make-report (TestCase.run (describe `satysfi-test` [
   test-report-maker-tests;
 
   integration-tests;
-]))
+] |> Test.run

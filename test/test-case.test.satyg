@@ -1,8 +1,8 @@
-@import: ../src/test-case
-@import: ../src/test-case-result
-@import: ../src/test-run-result
+@import: ../src/test
 
-let test-case-tests = open TestCase in
+open Test
+
+let test-case-tests = open Test in
   describe `TestCase` [
     it `makes a result for a successful test case` (fun () -> (
       let expected = TestRunResult.make (|
@@ -15,7 +15,7 @@ let test-case-tests = open TestCase in
       |) in
       let actual = test `Mock test case` (fun () -> (
         Expect.always-pass
-      )) |> run in
+      )) |> TestCase.run in
       actual
       |> TestRunResult.eq expected
       |> Expect.is-true
@@ -32,7 +32,7 @@ let test-case-tests = open TestCase in
       |) in
       let actual = test `Mock test case` (fun () -> (
        Expect.always-fail
-      )) |> run in
+      )) |> TestCase.run in
       actual
       |> TestRunResult.eq expected
       |> Expect.is-true
@@ -66,7 +66,7 @@ let test-case-tests = open TestCase in
         it `success 1` (fun () -> Expect.always-pass);
         it `success 2` (fun () -> Expect.always-pass);
         it `fail 3` (fun () -> Expect.always-fail);
-      ] |> run in
+      ] |> TestCase.run in
 
       actual
       |> TestRunResult.eq expected

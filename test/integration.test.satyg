@@ -1,8 +1,8 @@
-@import: ../src/test-case
-@import: ../src/test-report-maker
+@import: ../src/test
+
+open Test
 
 let integration-tests =
-  open TestCase in
   test `integration works` (fun () -> (
     let expected = `Test summary : 1 run, 1 success, 0 fail
 

@@ -1,9 +1,7 @@
 @import: lib/spy
-@import: ../src/expect
-@import: ../src/test-report-maker
-@import: ../src/test-case
-@import: ../src/test-case-result
-@import: ../src/test-run-result
+@import: ../src/test
+
+open Test
 
 let test-report-maker-tests =
   let test-report-for-single-test-success =
@@ -33,7 +31,6 @@ Test run report
 
 `# in
 
-  open TestCase in
   describe `TestReportMaker` [
     it `makes a report for a successful test result` (fun () -> (
       let expected = test-report-for-single-test-success in

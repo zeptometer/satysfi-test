@@ -1,0 +1,23 @@
+@import: expect
+@import: test-case
+@import: test-report-maker
+
+module Test : sig
+
+  val test : string -> (unit -> ExpectResult.t) -> TestCase.t
+  val it : string -> (unit -> ExpectResult.t) -> TestCase.t
+  val describe : string -> TestCase.t list -> TestCase.t
+
+  val run : TestCase.t -> string
+
+end = struct
+
+  let test = TestCase.test
+  let it = TestCase.test
+  let describe = TestCase.describe
+
+  let run test-case = test-case
+    |> TestCase.run
+    |> TestReportMaker.make-report
+
+end
