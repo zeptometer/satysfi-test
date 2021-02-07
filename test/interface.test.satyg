@@ -20,11 +20,11 @@ Test run report
         success = 1;
         detail = TestCaseResult.of-test (|
           description = `mock test case`;
-          result = TestCaseResultStatus.success;
+          status = TestCaseResultStatus.success;
         |)
       |) in
-      let actual = run-result |> Interface.make-test-report in
-      actual |> string-same expected |> Expected.is-true
+      let actual = run-result |> Interface.make-report in
+      actual |> string-same expected |> Expect.is-true
     ));
 
     test `integration works` (fun () -> (
@@ -36,7 +36,8 @@ Test run report
 `# in
       let () = display-message `Start mock test -->` in
       let actual = test `test case 1` (fun () -> Expect.always-pass)
-        |> Interface.execute in
+        |> TestCase.run
+        |> Interface.make-report in
       let () = display-message `<-- End mock test` in
       (actual |> string-same expected) |> Expect.is-true));
   ]

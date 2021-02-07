@@ -3,7 +3,7 @@
 
 module Interface : sig
 
-  val execute : TestCase.t -> string
+  val make-report : TestRunResult.t -> string
 
 end = struct
 
@@ -11,7 +11,7 @@ end = struct
 
 `#
 
-  let make-test-summary result =
+  let make-summary result =
     open TestRunResult in
     let run-count = result |> count-run in
     let success-count = result |> count-success in
@@ -21,15 +21,14 @@ end = struct
     ^ (arabic (run-count - success-count)) ^ #` fail`#
     ^ newline
 
-  let make-test-report result = `Test run report
+  let make-detail result = `Test run report
 - mock test case -> PASS
 
 `#
 
-  let execute test =
-    let run-result = test |> TestCase.run in
-    let summary-text = run-result |> make-test-summary in
-    let report-text = run-result |> make-test-report in
+  let make-report run-result =
+    let summary-text = run-result |> make-summary in
+    let report-text = run-result |> make-detail in
     let output = summary-text ^ newline ^ report-text in
     let () =  output |> display-message in
     output

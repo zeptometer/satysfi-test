@@ -16,7 +16,7 @@
 % toplevel function for convert TestRunResult to readble output
 
 open TestCase in
-Interface.execute (describe `satysfi-test` [
+Interface.make-report (TestCase.run (describe `satysfi-test` [
   describe `Spy` [
     test `was-run is false initially` (fun () -> (
       let spy = Spy.make () in
@@ -131,4 +131,4 @@ Interface.execute (describe `satysfi-test` [
   ];
 
   interface-test-cases;
-])
+]))
