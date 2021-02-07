@@ -20,12 +20,12 @@
 open TestCase in
 TestReportMaker.make-report (TestCase.run (describe `satysfi-test` [
   describe `Spy` [
-    test `was-run is false initially` (fun () -> (
+    it `was-run is false initially` (fun () -> (
       let spy = Spy.make () in
       spy |> Spy.was-run |> Expect.is-false
     ));
 
-    test `was-run is true when test-fun is called` (fun () -> (
+    it `was-run is true when test-fun is called` (fun () -> (
       let spy = Spy.make () in
       let _ = (spy |> Spy.get-spy) () in
       spy |> Spy.was-run |> Expect.is-true
@@ -33,18 +33,18 @@ TestReportMaker.make-report (TestCase.run (describe `satysfi-test` [
   ];
 
   describe `Test` [
-    test `test calls test body` (fun () -> (
+    it `test calls test body` (fun () -> (
       let spy = Spy.make () in
       let _ = test `Mock test case` (spy |> Spy.get-spy) |> run in
       spy |> Spy.was-run |> Expect.is-true
     ));
 
-    test `describe calls all test cases` (fun () -> (
+    it `describe calls all test cases` (fun () -> (
       let (spy1, spy2) = (Spy.make (), Spy.make ()) in
       let _ = describe `Multiple test cases` [
-        test `Test case 1` (spy1 |> Spy.get-spy);
+        it `Test case 1` (spy1 |> Spy.get-spy);
         describe `Nested describe` [
-          test `Test case 2` (spy2 |> Spy.get-spy);
+          it `Test case 2` (spy2 |> Spy.get-spy);
         ]
       ] |> run in
       ((spy1 |> Spy.was-run) && (spy2 |> Spy.was-run))
@@ -60,27 +60,27 @@ TestReportMaker.make-report (TestCase.run (describe `satysfi-test` [
   % We cannot use Expect because it's the very test subject!
   let assert b = if b then ExpectResult.pass else  ExpectResult.fail in
   describe `Expect` [
-    test `always-pass` (fun () -> (
+    it `always-pass` (fun () -> (
       Expect.always-pass|> ExpectResult.is-pass |> assert
     ));
 
-    test `always-fail` (fun () -> (
+    it `always-fail` (fun () -> (
       Expect.always-fail |> ExpectResult.is-pass |> (not) |> assert
     ));
 
-    test `true passes when true given` (fun () -> (
+    it `true passes when true given` (fun () -> (
       Expect.is-true true |> ExpectResult.is-pass |> assert
     ));
 
-    test `true fails when false given` (fun () -> (
+    it `true fails when false given` (fun () -> (
       Expect.is-true false |> ExpectResult.is-pass |> (not) |> assert
     ));
 
-    test `false passes when false given` (fun () -> (
+    it `false passes when false given` (fun () -> (
       Expect.is-false false |> ExpectResult.is-pass |> assert
     ));
 
-    test `false fails when true given` (fun () -> (
+    it `false fails when true given` (fun () -> (
       Expect.is-false true |> ExpectResult.is-pass |> (not) |> assert
     ));
   ];

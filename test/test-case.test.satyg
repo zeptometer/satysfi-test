@@ -4,7 +4,7 @@
 
 let test-case-tests = open TestCase in
   describe `TestCase` [
-    test `makes a result for a successful test case` (fun () -> (
+    it `makes a result for a successful test case` (fun () -> (
       let expected = TestRunResult.make (|
         run = 1;
         success = 1;
@@ -21,7 +21,7 @@ let test-case-tests = open TestCase in
       |> Expect.is-true
     ));
 
-    test `makes a result for a failing test case` (fun () -> (
+    it `makes a result for a failing test case` (fun () -> (
       let expected = TestRunResult.make (|
         run = 1;
         success = 0;
@@ -38,8 +38,7 @@ let test-case-tests = open TestCase in
       |> Expect.is-true
     ));
 
-    %% FIXME!
-    test `makes a result for multiple test cases` (fun () -> (
+    it `makes a result for multiple test cases` (fun () -> (
       let expected = TestRunResult.make (|
         run = 3;
         success = 2;
@@ -64,9 +63,9 @@ let test-case-tests = open TestCase in
       |) in
 
       let actual = describe `Mock describe` [
-        test `success 1` (fun () -> Expect.always-pass);
-        test `success 2` (fun () -> Expect.always-pass);
-        test `fail 3` (fun () -> Expect.always-fail);
+        it `success 1` (fun () -> Expect.always-pass);
+        it `success 2` (fun () -> Expect.always-pass);
+        it `fail 3` (fun () -> Expect.always-fail);
       ] |> run in
 
       actual

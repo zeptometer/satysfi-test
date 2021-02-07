@@ -35,7 +35,7 @@ Test run report
 
   open TestCase in
   describe `TestReportMaker` [
-    test `makes a report for a successful test result` (fun () -> (
+    it `makes a report for a successful test result` (fun () -> (
       let expected = test-report-for-single-test-success in
       let run-result = TestRunResult.make (|
         run = 1;
@@ -49,7 +49,7 @@ Test run report
       actual |> string-same expected |> Expect.is-true
     ));
 
-    test `makes a report for a failing test result` (fun () -> (
+    it `makes a report for a failing test result` (fun () -> (
       let expected = test-report-for-single-test-fail in
       let run-result = TestRunResult.make (|
         run = 1;
@@ -63,7 +63,7 @@ Test run report
       actual |> string-same expected |> Expect.is-true
     ));
 
-    test `makes a report for multi test result` (fun () -> (
+    it `makes a report for multi test result` (fun () -> (
       let expected = test-report-for-multi-tests in
       let run-result = TestRunResult.make (|
         run = 3;
