@@ -30,7 +30,6 @@ end = struct
     let summary-text = run-result |> make-summary in
     let report-text = run-result |> make-detail in
     let output = summary-text ^ newline ^ report-text in
-    let () =  output |> display-message in
     output
 
 end

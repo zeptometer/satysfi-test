@@ -34,10 +34,8 @@ Test run report
 - mock test case -> PASS
 
 `# in
-      let () = display-message `Start mock test -->` in
       let actual = test `test case 1` (fun () -> Expect.always-pass)
         |> TestCase.run
         |> TestReportMaker.make-report in
-      let () = display-message `<-- End mock test` in
       (actual |> string-same expected) |> Expect.is-true));
   ]
