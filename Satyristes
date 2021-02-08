@@ -1,0 +1,18 @@
+;; For Satyrographos 0.0.2 series
+(version 0.0.2)
+
+;; Library declaration
+(library
+  ;; Library name
+  (name "test")
+  ;; Library version
+  (version "0.0.1")
+  ;; Files
+  (sources
+    ((packageDir "src")))
+  ;; OPAM package file
+  (opam "satysfi-test.opam")
+  ;; Dependency
+  (dependencies
+    ((dist ()) ; Standard library
+    )))

@@ -3,6 +3,30 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  check-opam-sanity:
+    name: Check sanity of opam/Satyristes
+    runs-on: ubuntu-latest
+    container:
+      image: amutake/satysfi:0.0.6-opam-slim
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run satyrographos lint
+        run: |
+          export HOME=/root
+          eval $(opam env)
+          satyrographos lint -S 0.0.5
+        # satyrographos lint does not support satysfi 0.0.6
+      - name: Try install satysfi-test with opam
+        run: |
+          export HOME=/root
+          eval $(opam env)
+          opam update
+          opam pin add "file://${PWD}"
+      - name: Try install test with satyrographos
+        run: |
+          export HOME=/root
+          eval $(opam env)
+          satyrographos install -l test
   unit-test:
     name: unit tests
     runs-on: ubuntu-latest
