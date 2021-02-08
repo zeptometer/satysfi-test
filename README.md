@@ -1,2 +1,2 @@
 # satysfi-test
-Unit test framework for SATySFi
+Unit testing framework for SATySFi
