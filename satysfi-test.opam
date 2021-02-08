@@ -1,0 +1,25 @@
+opam-version: "2.0"
+name: "satysfi-test"
+version: "0.0.1"
+synopsis: "Unit testing framework for SATySFi"
+description: """
+Unit testing framework for SATySFi
+"""
+maintainer: "Yuito Murase <yuito@acupof.coffee>"
+authors: "Yuito Murase <yuito@acupof.coffee>"
+license: "MIT"
+homepage: "https://github.com/<github-username>/satysfi-test"
+dev-repo: "git+https://github.com/<github-username>/satysfi-test.git"
+bug-reports: "https://github.com/<github-username>/satysfi-test/issues"
+depends: [
+  "satysfi" { >= "0.0.6" & < "0.0.7" }
+  "satyrographos" { >= "0.0.2.8" & < "0.0.3" }
+  "satysfi-dist"
+]
+build: [ ]
+install: [
+  ["satyrographos" "opam" "install"
+   "--name" "test"
+   "--prefix" "%{prefix}%"
+   "--script" "%{build}%/Satyristes"]
+]
