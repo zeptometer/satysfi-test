@@ -1,0 +1,12 @@
+@require: test/expect
+@require: test/test
+
+open Test in
+describe `Mock test` [
+  it `true is true` (fun () -> (
+    true |> Expect.is-true
+  ));
+  it `false is false` (fun () -> (
+    false |> Expect.is-false
+  ))
+] |> Test.run
